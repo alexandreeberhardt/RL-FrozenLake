@@ -1,1 +1,4 @@
 .venv
+src/fl-agent
+src/.idea
+src/__pycache__
