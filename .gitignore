@@ -1,4 +1,6 @@
 .venv
+.vscode
 src/fl-agent
 src/.idea
 src/__pycache__
+*.zip
