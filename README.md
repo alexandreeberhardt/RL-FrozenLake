@@ -51,5 +51,5 @@ python experiment.py
 | # | Composante | `success_rate` | Rewards (Goal / Hole / Frozen) |
 |---|---|---|---|
 | 1 | Efficacité | 0.90 | +1 / -0.5 / -0.01 |
-| 2 | Évitement d'obstacles | 0.60 | +1 / -5.0 / 0.0 |
+| 2 | Évitement d'obstacles | 0.90 | +1 / -1.0 / 0.0 |
 | 3 | Compromis risque/récompense | 0.75 | +1 / -1.0 / -0.05 |
