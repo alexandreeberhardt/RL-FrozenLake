@@ -1,4 +1,4 @@
-from generate_case_study import generate_env, create_recorder, train_model
+from generate_case_study import generate_env, train_model
 from stable_baselines3 import PPO, DQN
 from parser import generate_argparser
 from stable_baselines3.common.evaluation import evaluate_policy
