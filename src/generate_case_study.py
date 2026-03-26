@@ -54,14 +54,14 @@ maps = [
 ]
 
 CASE_CONFIGS = {
-    1: {"success_rate": 0.90, "rewards": (1.0, -0.5,  -0.01)},
-    2: {"success_rate": 0.60, "rewards": (1.0, -5.0,   0.0)},
-    3: {"success_rate": 0.75, "rewards": (1.0, -1.0,  -0.05)},
+    1: {"success_rate": 0.90, "rewards": (1.0, -0.5, -0.01)},
+    2: {"success_rate": 0.90, "rewards": (1.0, -1.0, 0.0)},
+    3: {"success_rate": 0.75, "rewards": (1.0, -1.0, -0.05)},
 }
 
 def generate_env(case_study_nb, render_mode="human"):
     config = CASE_CONFIGS[case_study_nb]
-    print(f"  Génération du cas d'étude N°{case_study_nb} "
+    print(f"Génération du cas d'étude N°{case_study_nb} "
           f"(success_rate={config['success_rate']}, rewards={config['rewards']})")
     env = gym.make(
         'FrozenLake-v1',
@@ -71,16 +71,7 @@ def generate_env(case_study_nb, render_mode="human"):
         reward_schedule=config["rewards"],
         render_mode=render_mode,
     )
-    print_env_data(env)
     return env
-
-def print_env_data(env):
-    print(f"  Action space: {env.action_space}")
-    print(f"    - 0 : Gauche")
-    print(f"    - 1 : Bas")
-    print(f"    - 2 : Droit")
-    print(f"    - 3 : Haut")
-    print(f"  Observation space: {env.observation_space} i.e number of tiles")
 
 TIMESTEPS = 100_000
 
