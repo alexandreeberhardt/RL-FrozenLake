@@ -5,3 +5,4 @@ src/.idea
 src/__pycache__
 *.zip
 *.npy
+src/results/
