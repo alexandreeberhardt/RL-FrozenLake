@@ -18,19 +18,33 @@ cd src
 # Visualiser les 3 cas d'étude
 python test_envs.py
 
-# Entraîner et évaluer
-python main.py -p DQN -c 1 --train
-python main.py -p PPO -c 2 --train
+# Tester un run rapide (1 seed, 3 cas, 5 stratégies)
+python test_experiment.py
+
+# Entraîner et évaluer une stratégie
+python main.py -p QLearning -c 1 --train
+python main.py -p SARSA -c 2 --train
+python main.py -p DQN -c 3 --train
 
 # Évaluer uniquement (modèle déjà entraîné)
-python main.py -p DQN -c 1
-python main.py -p PPO -c 1
+python main.py -p QLearning -c 1
+
+# Lancer toutes les expériences (5 seeds × 3 cas × 5 stratégies)
+python experiment.py
 ```
 
 **Options :**
-- `-p` / `--policy` : `DQN` ou `PPO`
+- `-p` / `--policy` : `Random`, `QLearning`, `SARSA`, `DQN`, `PPO`
 - `-c` / `--case-study` : `1`, `2` ou `3`
 - `-t` / `--train` : entraîne et sauvegarde le modèle avant évaluation
+
+## Stratégies
+
+- **Random** : baseline aléatoire
+- **QLearning** : apprentissage hors-politique (off-policy), tabulaire
+- **SARSA** : apprentissage sur-politique (on-policy), tabulaire
+- **DQN** : Deep Q-Network, réseau de neurones
+- **PPO** : Proximal Policy Optimization, réseau de neurones
 
 ## Cas d'étude
 
