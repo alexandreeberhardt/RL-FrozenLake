@@ -53,3 +53,7 @@ python experiment.py
 | 1 | Efficacité | 0.90 | +1 / -0.5 / -0.01 |
 | 2 | Évitement d'obstacles | 0.90 | +1 / -1.0 / 0.0 |
 | 3 | Compromis risque/récompense | 0.75 | +1 / -1.0 / -0.05 |
+
+| Cas 1 — Efficacité | Cas 2 — Évitement | Cas 3 — Compromis |
+|:---:|:---:|:---:|
+| ![Cas 1](pictures/env1.png) | ![Cas 2](pictures/env2.png) | ![Cas 3](pictures/env3.png) |
