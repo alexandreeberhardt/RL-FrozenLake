@@ -113,7 +113,7 @@ def main():
             mean_r = round(float(np.mean(rewards)), 4)
             hole_rate = round(sum(holes) / len(holes) * 100, 1)
             success_rate = round(sum(successes) / len(successes) * 100, 1)
-            print(f"{policy} : recompnse moyenne: {mean_r:7.4f}, chutes: {hole_rate}%, succès: {success_rate}%")
+            print(f"{policy} : recompense moyenne: {mean_r:7.4f}, chutes: {hole_rate}%, succès: {success_rate}%")
 
 
 if __name__ == "__main__":
