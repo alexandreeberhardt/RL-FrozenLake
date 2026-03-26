@@ -31,7 +31,7 @@ maps = [
 ]
 
 
-def generate_env(case_study_nb,rewards=(100.0,-1.0,0.0)):
+def generate_env(case_study_nb,rewards=(100.0,-1.0,0.0), render_mode="human"):
     print(f"  Génération du cas d'étude N°{case_study_nb} ")
     env = gym.make('FrozenLake-v1',
                    desc=maps[case_study_nb -1], # modifier ici pour changer la map
@@ -39,7 +39,7 @@ def generate_env(case_study_nb,rewards=(100.0,-1.0,0.0)):
                    success_rate= 3.0/4.0, # proba de réaliser l'action souhaitée
                    reward_schedule=rewards,
                    # les récompenses pour Reach Goal, Reach Hole, Reach Frozen respectivement
-                   render_mode="human"
+                   render_mode=render_mode
                 )
 
     print_env_data(env)

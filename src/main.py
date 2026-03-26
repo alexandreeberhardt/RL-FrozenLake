@@ -23,10 +23,12 @@ def main():
     args = parser.parse_args()
     print("Génération de l'environnement")
     cs = int(args.case_study)
-    env = generate_env(cs)
     if args.train:
-        train_model(args.policy, env, cs)
+        train_env = generate_env(cs, render_mode=None)
+        train_model(args.policy, train_env, cs)
+        train_env.close()
 
+    env = generate_env(cs)
     model = load_model(args.policy, cs)
     mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=10)
     print(f"\nRécompense moyenne sur le case study {cs} pour la politique {args.policy}: {mean_reward}\n")

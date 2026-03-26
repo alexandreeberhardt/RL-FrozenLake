@@ -23,5 +23,6 @@ python-dotenv==1.2.1
 seaborn==0.13.2
 six==1.17.0
 tqdm==4.67.3
+rich
 typing_extensions==4.15.0
 stable-baselines3==2.7.1
