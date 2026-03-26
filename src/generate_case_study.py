@@ -1,6 +1,4 @@
 import gymnasium as gym
-from gymnasium.wrappers import RecordEpisodeStatistics, RecordVideo
-from stable_baselines3 import PPO, DQN
 
 # observation space
 # starting state
@@ -57,11 +55,15 @@ def print_env_data(env):
 
 def train_model(name,env,cs):
     if name == "PPO":
+        from stable_baselines3 import PPO
+
         model = PPO("MlpPolicy", env, verbose=1)
         model.learn(total_timesteps=2000, progress_bar=True, log_interval=4)
         filename = f"ppo_frozenlake_cs{cs}"
         model.save(filename)
     if name == "DQN":
+        from stable_baselines3 import DQN
+
         model = DQN("MlpPolicy", env, verbose=1)
         model.learn(total_timesteps=10_000, progress_bar=True, log_interval=4)
         filename = f"dqn_frozenlake_cs{cs}"
