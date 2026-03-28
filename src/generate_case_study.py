@@ -54,9 +54,9 @@ maps = [
 ]
 
 CASE_CONFIGS = {
-    1: {"success_rate": 0.90, "rewards": (5.0, -0.5, -0.01)},
-    2: {"success_rate": 0.90, "rewards": (5.0, -1.0, -0.001)},
-    3: {"success_rate": 0.75, "rewards": (10.0, -1.0, -0.05)},
+    1: {"success_rate": 0.90, "rewards": (1.0, -0.5, -0.01)},
+    2: {"success_rate": 0.90, "rewards": (1.0, -1.0, 0.0)},
+    3: {"success_rate": 0.75, "rewards": (1.0, -1.0, -0.05)},
 }
 
 def generate_env(case_study_nb, render_mode="human"):
