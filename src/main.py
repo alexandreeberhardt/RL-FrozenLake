@@ -89,7 +89,7 @@ def main():
 
         print(f"Évaluation de {policy} sur le cas {cs}...")
         Q = load_qtable(policy, cs)
-        env = generate_env(cs, render_mode="human")
+        env = generate_env(cs, render_mode="None")
         mean_r, std_r, hole_rate = evaluate_tabular(Q, policy, env, hole_reward)
         env.close()
         print(f"\nRécompense moyenne : {mean_r} ± {std_r}")
