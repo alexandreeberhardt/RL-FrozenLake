@@ -6,7 +6,7 @@ SEEDS = [0, 1, 2, 3, 4]
 POLICIES = ["QLearning", "SARSA"]
 CASES = [1, 2, 3]
 
-N_EPISODES = 10_000
+N_EPISODES = 100_000
 ALPHA = 0.1
 GAMMA = 0.99
 
