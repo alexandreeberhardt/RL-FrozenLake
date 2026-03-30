@@ -11,6 +11,7 @@ ALPHA = 0.1
 GAMMA = 0.99
 
 RESULTS_DIR = "results"
+N_EVAL_EPISODES = 1000
 
 
 def epsilon(episode_idx):
@@ -79,6 +80,34 @@ def train(policy, env, seed, hole_reward, goal_reward=1.0):
     return episodes, Q
 
 
+def evaluate_greedy(Q, env, hole_reward, goal_reward=1.0, n_episodes=N_EVAL_EPISODES):
+    rewards, holes, successes = [], [], []
+    obs, _ = env.reset()
+
+    for ep in range(n_episodes):
+        if ep > 0:
+            obs, _ = env.reset()
+
+        ep_reward = 0.0
+
+        while True:
+            action = int(np.argmax(Q[obs]))
+            obs, reward, terminated, truncated, _ = env.step(action)
+            ep_reward += reward
+
+            if terminated or truncated:
+                rewards.append(ep_reward)
+                holes.append(int(terminated and abs(reward - hole_reward) < 1e-6))
+                successes.append(int(terminated and abs(reward - goal_reward) < 1e-6))
+                break
+
+    return {
+        "mean_reward": round(float(np.mean(rewards)), 4),
+        "hole_rate": round(float(np.mean(holes)) * 100, 1),
+        "success_rate": round(float(np.mean(successes)) * 100, 1),
+    }
+
+
 def main():
     from generate_case_study import generate_env, CASE_CONFIGS
     os.makedirs(RESULTS_DIR, exist_ok=True)
@@ -88,31 +117,40 @@ def main():
         goal_reward = CASE_CONFIGS[cs]["rewards"][0]
         for policy in POLICIES:
             all_seeds = []
+            evals = []
             for seed in SEEDS:
                 print(f"\nCas {cs}, {policy}, Seed {seed}")
                 env = generate_env(cs, render_mode=None)
-                episodes, _ = train(policy, env, seed, hole_reward, goal_reward)
+                episodes, Q = train(policy, env, seed, hole_reward, goal_reward)
                 env.close()
                 all_seeds.append(episodes)
                 print(f"{len(episodes)} épisodes, {sum(e['fell_in_hole'] for e in episodes)} chutes")
+
+                eval_env = generate_env(cs, render_mode=None)
+                evals.append(evaluate_greedy(Q, eval_env, hole_reward, goal_reward))
+                eval_env.close()
 
             path = f"{RESULTS_DIR}/cs{cs}_{policy}.json"
             with open(path, "w") as f:
                 json.dump(all_seeds, f)
 
+            eval_path = f"{RESULTS_DIR}/cs{cs}_{policy}_eval.json"
+            with open(eval_path, "w") as f:
+                json.dump(evals, f)
+
     print("\nBILAN GÉNÉRAL")
     for cs in CASES:
         print(f"\nCas {cs}")
         for policy in POLICIES:
-            path = f"{RESULTS_DIR}/cs{cs}_{policy}.json"
+            path = f"{RESULTS_DIR}/cs{cs}_{policy}_eval.json"
             with open(path) as f:
-                all_seeds = json.load(f)
-            rewards = [x["reward"] for seed in all_seeds for x in seed[-100:]]
-            holes = [x["fell_in_hole"] for seed in all_seeds for x in seed]
-            successes = [x["success"] for seed in all_seeds for x in seed[-100:]]
+                evals = json.load(f)
+            rewards = [x["mean_reward"] for x in evals]
+            holes = [x["hole_rate"] for x in evals]
+            successes = [x["success_rate"] for x in evals]
             mean_r = round(float(np.mean(rewards)), 4)
-            hole_rate = round(sum(holes) / len(holes) * 100, 1)
-            success_rate = round(sum(successes) / len(successes) * 100, 1)
+            hole_rate = round(float(np.mean(holes)), 1)
+            success_rate = round(float(np.mean(successes)), 1)
             print(f"{policy} : recompense moyenne: {mean_r:7.4f}, chutes: {hole_rate}%, succès: {success_rate}%")
 
 
