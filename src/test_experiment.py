@@ -24,4 +24,4 @@ for cs in [1, 2, 3]:
         mean_r, std_r = evaluate_sb3(model, model_env)
         env.close()
         model_env.close()
-        print(f"{policy} : reward moyenne: {mean_r} ± {std_r}")
+        print(f"{policy} : reward moyenne: {mean_r} +/- {std_r}")

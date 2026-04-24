@@ -34,7 +34,7 @@ python experiment.py
 ```
 
 **Options :**
-- `-p` / `--policy` : `Random`, `QLearning`, `SARSA`, `DQN`, `PPO`
+- `-p` / `--policy` : `Random`, `QLearning`, `SARSA`, `RiskQLearning`, `DQN`, `PPO`
 - `-c` / `--case-study` : `1`, `2` ou `3`
 - `-t` / `--train` : entraîne et sauvegarde le modèle avant évaluation
 
@@ -43,6 +43,7 @@ python experiment.py
 - **Random** : baseline aléatoire
 - **QLearning** : apprentissage hors-politique (off-policy), tabulaire
 - **SARSA** : apprentissage sur-politique (on-policy), tabulaire
+- **RiskQLearning** : Q-learning sensible au risque (Mihatsch & Neuneier, 2002), tabulaire
 - **DQN** : Deep Q-Network, réseau de neurones
 - **PPO** : Proximal Policy Optimization, réseau de neurones
 
@@ -52,7 +53,7 @@ python experiment.py
 |---|---|---|---|
 | 1 | Efficacité | 0.90 | +1 / -0.5 / -0.01 |
 | 2 | Évitement d'obstacles | 0.90 | +1 / -1.0 / 0.0 |
-| 3 | Compromis risque/récompense | 0.75 | +1 / -1.0 / -0.05 |
+| 3 | Compromis risque/récompense | 0.75 | +1.75 / -1.0 / -0.05 |
 
 | Cas 1 — Efficacité | Cas 2 — Évitement | Cas 3 — Compromis |
 |:---:|:---:|:---:|
