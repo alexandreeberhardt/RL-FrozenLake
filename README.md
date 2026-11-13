@@ -1,60 +1,52 @@
-# RL FrozenLake
+# Risk-sensitive Q-learning on a slippery FrozenLake
 
-> **Ne pas utiliser Python 3.14** car pygame ne supporte pas le chargement d'images PNG dans cette version. Utiliser **Python 3.12**.
+Can an agent fall into fewer holes *while it learns*, not just once it has learned? We compared Q-learning, SARSA and risk-sensitive Q-learning (Mihatsch & Neuneier, 2002) on three slippery FrozenLake maps, each built to stress a different trade-off.
 
-## Installation
+Course project for IFT-7201 (Reinforcement Learning, Université Laval), with [Rémi Hercouet](https://github.com/Yaienex). Full report: [`report/report.pdf`](report/report.pdf).
 
-```bash
-python3.12 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
+![Fall rate during training, three strategies on three maps](report/holes.png)
 
-## Utilisation
+## Results
 
-```bash
-cd src
-
-# Visualiser les 3 cas d'étude
-python test_envs.py
-
-# Tester un run rapide (1 seed, 3 cas, 5 stratégies)
-python test_experiment.py
-
-# Entraîner et évaluer une stratégie
-python main.py -p QLearning -c 1 --train
-python main.py -p SARSA -c 2 --train
-python main.py -p DQN -c 3 --train
-
-# Évaluer uniquement (modèle déjà entraîné)
-python main.py -p QLearning -c 1
-
-# Lancer toutes les expériences (5 seeds × 3 cas × 5 stratégies)
-python experiment.py
-```
-
-**Options :**
-- `-p` / `--policy` : `Random`, `QLearning`, `SARSA`, `RiskQLearning`, `DQN`, `PPO`
-- `-c` / `--case-study` : `1`, `2` ou `3`
-- `-t` / `--train` : entraîne et sauvegarde le modèle avant évaluation
-
-## Stratégies
-
-- **Random** : baseline aléatoire
-- **QLearning** : apprentissage hors-politique (off-policy), tabulaire
-- **SARSA** : apprentissage sur-politique (on-policy), tabulaire
-- **RiskQLearning** : Q-learning sensible au risque (Mihatsch & Neuneier, 2002), tabulaire
-- **DQN** : Deep Q-Network, réseau de neurones
-- **PPO** : Proximal Policy Optimization, réseau de neurones
-
-## Cas d'étude
-
-| # | Composante | `success_rate` | Rewards (Goal / Hole / Frozen) |
-|---|---|---|---|
-| 1 | Efficacité | 0.90 | +1 / -0.5 / -0.01 |
-| 2 | Évitement d'obstacles | 0.90 | +1 / -1.0 / 0.0 |
-| 3 | Compromis risque/récompense | 0.75 | +1.75 / -1.0 / -0.05 |
-
-| Cas 1 — Efficacité | Cas 2 — Évitement | Cas 3 — Compromis |
+| 1. Efficiency | 2. Narrow corridor | 3. Risk vs reward |
 |:---:|:---:|:---:|
-| ![Cas 1](pictures/env1.png) | ![Cas 2](pictures/env2.png) | ![Cas 3](pictures/env3.png) |
+| <img src="pictures/env1.png" width="220"> | <img src="pictures/env2.png" width="220"> | <img src="pictures/env3.png" width="220"> |
+| Three scattered holes | A diagonal corridor between holes | A short path along the holes, or a long safe detour |
+
+Each run: 100,000 training episodes, then 1,000 greedy evaluation episodes. Mean over 5 seeds.
+
+| Map | Strategy | Success (eval) | Falls (eval) | Falls during training (seed 0) |
+|---|---|---:|---:|---:|
+| 1. Efficiency | Q-learning | 95.5% | 4.2% | 7,556 |
+| | SARSA | 94.7% | 5.3% | 7,129 |
+| | Risk-sensitive | 94.7% | 5.3% | 7,020 |
+| 2. Narrow corridor | Q-learning | 56.1% | 17.2% | 29,191 |
+| | SARSA | 61.3% | 18.4% | 28,296 |
+| | Risk-sensitive | 0.1% | 0.1% | **5,218** |
+| 3. Risk vs reward | Q-learning | 82.1% | 17.8% | 25,612 |
+| | SARSA | 76.2% | 23.7% | 47,860 |
+| | Risk-sensitive | 46.1% | 53.9% | 56,675 |
+
+**What it shows**
+
+- **Map 1.** On an easy map the three agents end up the same, around 95% success.
+- **Map 2.** The risk-sensitive agent falls five times less during training. But its final policy almost never moves: 0.1% falls, 0.1% success. It became so averse to holes that it stopped crossing.
+- **Map 3.** When speed and safety have to be traded off, the same agent does worst: it falls more than both baselines, during training and after. Overweighting bad surprises distorts its value estimates instead of making it careful.
+
+## Method
+
+- Environment: Gymnasium FrozenLake v1, slippery, with three custom maps and reward schemes (`src/generate_case_study.py`).
+- Risk-sensitive Q-learning: negative TD errors are weighted 1.5×, positive ones 0.5× (κ = −0.5 in `src/experiment.py`).
+- Shared settings: α = 0.1, γ = 0.99, ε decays from 1.0 to 0.01.
+
+## Run it
+
+Python 3.12 (pygame cannot load PNGs on 3.14).
+
+```bash
+python3.12 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+cd src
+python experiment.py   # 3 strategies × 3 maps × 5 seeds
+python graphique.py    # figures
+```
